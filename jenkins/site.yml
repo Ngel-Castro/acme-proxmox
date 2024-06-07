@@ -1,0 +1,64 @@
+---
+- hosts: jenkins
+  gather_facts: true
+  become: true
+
+  tasks:
+    - name: Update and upgrade APT packages
+      apt:
+        update_cache: yes
+        upgrade: yes
+
+    - name: Install Java (Jenkins dependency)
+      apt:
+        name: openjdk-11-jdk
+        state: present
+
+    - name: Download Jenkins repository key
+      ansible.builtin.command:
+        cmd: "curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key -o /tmp/jenkins-keyring.gpg"
+      register: result
+
+    - name: Add Jenkins repository key
+      ansible.builtin.command:
+        cmd: "gpg --dearmor -o /usr/share/keyrings/jenkins-keyring.gpg /tmp/jenkins-keyring.gpg"
+      register: result
+
+    - name: Add Jenkins repository
+      ansible.builtin.apt_repository:
+        repo: 'deb [signed-by=/usr/share/keyrings/jenkins-keyring.gpg] https://pkg.jenkins.io/debian-stable binary/'
+        state: present
+
+    - name: Update APT cache after adding Jenkins repository
+      apt:
+        update_cache: yes
+
+    - name: Install Jenkins
+      apt:
+        name: jenkins
+        state: present
+
+    - name: Ensure Jenkins is started and enabled
+      systemd:
+        name: jenkins
+        enabled: yes
+        state: started
+
+    - name: Install Docker
+      apt:
+        name: 
+          - docker.io
+          - docker-compose
+        state: present
+
+    - name: Ensure Docker service is started and enabled
+      systemd:
+        name: docker
+        enabled: yes
+        state: started
+
+    - name: Add current user to the Docker group
+      user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes

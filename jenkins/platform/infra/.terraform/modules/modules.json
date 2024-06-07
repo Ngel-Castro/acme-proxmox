@@ -1,0 +1,1 @@
+{"Modules":[{"Key":"","Source":"","Dir":"."},{"Key":"vm_single_instance","Source":"git::https://github.com/Ngel-Castro/proxmox_single_vm_module.git","Dir":".terraform/modules/vm_single_instance"}]}
