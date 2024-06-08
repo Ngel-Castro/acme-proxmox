@@ -50,7 +50,7 @@
     mode: 0755
 
 - name: Copy Groovy script template to skip setup wizard and install plugins
-  tansible.builtin.emplate:
+  ansible.builtin.template:
     src: templates/basic-setup.groovy.j2
     dest: /var/lib/jenkins/init.groovy.d/basic-setup.groovy
     owner: jenkins
