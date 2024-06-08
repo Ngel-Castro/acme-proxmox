@@ -1,5 +1,5 @@
 module "vm_single_instance" {
-  source = "github.com/Ngel-Castro/proxmox_single_vm_module"
+  source = "github.com/Ngel-Castro/proxmox_single_vm_module?ref=stable"
 
   # Pass in required variables
     proxmox_host      = var.proxmox_host
