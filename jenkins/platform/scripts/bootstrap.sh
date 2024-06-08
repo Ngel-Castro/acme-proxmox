@@ -23,7 +23,7 @@ echo "Deploying infrastructure"
 tofu plan -var-file=${JENKINS_DEVEL_VARS} -var="proxmox_token_id=${PROXMOX_TOKEN_ID}" -var="proxmox_token_secret=${PROXMOX_TOKEN_SECRET}"
 tofu apply --auto-approve -var-file=${JENKINS_DEVEL_VARS} -var="proxmox_token_id=${PROXMOX_TOKEN_ID}" -var="proxmox_token_secret=${PROXMOX_TOKEN_SECRET}"
 echo "Moving inventory YAML to inventory location in ansible"
-cp inventory.yaml $initialLocation/${JENKINS_PLATFORM_ANSIBLE}/inventory/jenkins/
+cp inventory.yaml $initialLocation/${JENKINS_PLATFORM_ANSIBLE}/inventory/ci/
 
 cd $initialLocation
 cd jenkins
