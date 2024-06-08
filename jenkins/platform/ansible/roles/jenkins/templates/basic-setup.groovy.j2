@@ -20,15 +20,18 @@ strategy.setAllowAnonymousRead(false)
 instance.setAuthorizationStrategy(strategy)
 
 // Install minimal set of plugins
-def pluginManager = instance.pluginManager
-def updateCenter = pluginManager.updateCenter
 def pluginNames = {{ plugin_names | to_json }}
+def updateCenter = Jenkins.instance.updateCenter
 
 pluginNames.each { pluginName ->
-    def plugin = pluginManager.getPlugin(pluginName)
-    if (plugin == null) {
-        def pluginInstallJob = updateCenter.getPlugin(pluginName).deploy()
-        pluginInstallJob.get()
+    if (!Jenkins.instance.pluginManager.getPlugin(pluginName)) {
+        def plugin = updateCenter.getPlugin(pluginName)
+        if (plugin) {
+            def installFuture = plugin.deploy()
+            installFuture.get()
+        } else {
+            println("Plugin ${pluginName} not found in update center")
+        }
     }
 }
 
