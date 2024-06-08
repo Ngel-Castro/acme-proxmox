@@ -27,16 +27,34 @@
     state: present
 
 - name: Update APT cache after adding Jenkins repository
-  apt:
+  ansible.builtin.apt:
     update_cache: yes
 
 - name: Install Jenkins
-  apt:
+  ansible.builtin.apt:
     name: jenkins
     state: present
 
 - name: Ensure Jenkins is started and enabled
-  systemd:
+  ansible.builtin.systemd:
     name: jenkins
     enabled: yes
     state: started
+
+- name: Create init.groovy.d directory
+  ansible.builtin.file:
+    path: /var/lib/jenkins/init.groovy.d
+    state: directory
+    owner: jenkins
+    group: jenkins
+    mode: 0755
+
+- name: Copy Groovy script template to skip setup wizard and install plugins
+  tansible.builtin.emplate:
+    src: templates/basic-setup.groovy.j2
+    dest: /var/lib/jenkins/init.groovy.d/basic-setup.groovy
+    owner: jenkins
+    group: jenkins
+    mode: 0644
+  notify:
+    - Restart Jenkins

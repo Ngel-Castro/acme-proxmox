@@ -1,0 +1,35 @@
+import jenkins.model.*
+import hudson.security.*
+import jenkins.install.*
+
+def instance = Jenkins.getInstance()
+
+// Skip setup wizard
+if (!instance.installState.isSetupComplete()) {
+    InstallState.INITIAL_SETUP_COMPLETED.initializeState()
+}
+
+// Set up security realm and create admin user
+def hudsonRealm = new HudsonPrivateSecurityRealm(false)
+hudsonRealm.createAccount('admin', 'changeme')
+instance.setSecurityRealm(hudsonRealm)
+
+// Set up authorization strategy
+def strategy = new FullControlOnceLoggedInAuthorizationStrategy()
+strategy.setAllowAnonymousRead(false)
+instance.setAuthorizationStrategy(strategy)
+
+// Install minimal set of plugins
+def pluginManager = instance.pluginManager
+def updateCenter = pluginManager.updateCenter
+def pluginNames = {{ plugin_names | to_json }}
+
+pluginNames.each { pluginName ->
+    def plugin = pluginManager.getPlugin(pluginName)
+    if (plugin == null) {
+        def pluginInstallJob = updateCenter.getPlugin(pluginName).deploy()
+        pluginInstallJob.get()
+    }
+}
+
+instance.save()

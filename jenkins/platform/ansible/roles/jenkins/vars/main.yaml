@@ -1,0 +1,4 @@
+---
+  plugin_names:
+    - git
+    - workflow-aggregator
