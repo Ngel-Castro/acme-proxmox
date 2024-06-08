@@ -9,6 +9,13 @@ if (!instance.installState.isSetupComplete()) {
     InstallState.INITIAL_SETUP_COMPLETED.initializeState()
 }
 
+// Set Jenkins URL
+def jenkinsUrl = "{{ jenkins_url }}"
+instance.setSystemMessage("Jenkins URL is set to: " + jenkinsUrl)
+def jenkinsLocationConfig = JenkinsLocationConfiguration.get()
+jenkinsLocationConfig.setUrl(jenkinsUrl)
+jenkinsLocationConfig.save()
+
 // Set up security realm and create admin user
 def hudsonRealm = new HudsonPrivateSecurityRealm(false)
 hudsonRealm.createAccount('admin', 'changeme')
