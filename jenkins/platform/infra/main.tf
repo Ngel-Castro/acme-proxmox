@@ -1,4 +1,4 @@
-module "vm_single_instance" {
+module "jenkins_controller" {
   source = "github.com/Ngel-Castro/proxmox_single_vm_module?ref=stable"
 
   # Pass in required variables
@@ -19,7 +19,7 @@ data "template_file" "inventory" {
   template = file("${path.module}/inventory.tpl")
 
   vars = {
-    vm_ip = module.vm_single_instance.vm_ip
+    vm_ip = module.jenkins_controller.vm_ip
     host_name = var.name
   }
 }
