@@ -31,6 +31,7 @@ No requirements.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_environment"></a> [environment](#input\_environment) | on which enviroment the project will be running | `string` | `"dev"` | no |
 | <a name="input_full_clone"></a> [full\_clone](#input\_full\_clone) | If you required full clone or not | `bool` | `false` | no |
 | <a name="input_memory"></a> [memory](#input\_memory) | Memory for VM | `number` | `2048` | no |
 | <a name="input_name"></a> [name](#input\_name) | Name of the VM | `string` | n/a | yes |

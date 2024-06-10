@@ -11,7 +11,7 @@ module "jenkins_controller" {
     template_name     = var.template_name
     network_bridge    = var.network_bridge
     memory            = var.memory
-    name              = var.name
+    name              = "${var.name}-${var.environment}"
 }
 
 
@@ -25,7 +25,7 @@ data "template_file" "inventory" {
 }
 
 resource "local_file" "ansible_inventory" {
-  filename = "${path.module}/inventory.yaml"
+  filename = "${path.module}/inventory_${var.environment}.yaml"
   content  = data.template_file.inventory.rendered
 }
 
