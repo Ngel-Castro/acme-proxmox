@@ -6,4 +6,5 @@ bootstrap:
 
 
 cleanup:
-	sh jenkins/platform/scripts/cleanup.sh development
+	$(info ************  DEVELOPMENT ************)
+	sh jenkins/platform/scripts/cleanup.sh dev
