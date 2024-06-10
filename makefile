@@ -1,5 +1,8 @@
 bootstrap:
-	sh jenkins/platform/scripts/bootstrap.sh
+	echo "creating a development environment"
+	sh jenkins/platform/scripts/bootstrap.sh development
+	# echo "creating a Production environment"
+	# sh jenkins/platform/scripts/bootstrap.sh production
 
 
 cleanup:
