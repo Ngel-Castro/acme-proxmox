@@ -56,6 +56,8 @@
     owner: jenkins
     group: jenkins
     mode: 0644
+  notify:
+    - Restart Jenkins
 
 - name: Copy Groovy script to add GitHub credentials
   template:
@@ -64,6 +66,8 @@
     owner: jenkins
     group: jenkins
     mode: 0644
+  notify:
+    - Restart Jenkins
 
 - name: Copy Groovy script to create pipeline job
   template:
@@ -72,8 +76,10 @@
     owner: jenkins
     group: jenkins
     mode: 0644
+  notify:
+    - Restart Jenkins
 
-- name: Restart Jenkins
+- name: Main restart
   service:
     name: jenkins
     state: restarted
