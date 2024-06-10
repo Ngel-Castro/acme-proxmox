@@ -25,7 +25,7 @@ data "template_file" "inventory" {
 }
 
 resource "local_file" "ansible_inventory" {
-  filename = "${path.module}/inventory.yaml"
+  filename = "${path.module}/inventory_${var.environment}.yaml"
   content  = data.template_file.inventory.rendered
 }
 

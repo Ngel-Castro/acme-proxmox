@@ -52,3 +52,9 @@ variable "name" {
   description = "Name of the VM"
   type        = string
 }
+
+variable "environment" {
+  description = "on which enviroment the project will be running"
+  type        = string
+  default     = "dev"
+}

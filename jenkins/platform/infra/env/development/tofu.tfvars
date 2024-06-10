@@ -6,3 +6,4 @@ template_name     = "ubuntu-server-beta"
 network_bridge    = "vmbr0"
 memory            = 4128
 name              = "jenkins"
+environment       = "dev"
