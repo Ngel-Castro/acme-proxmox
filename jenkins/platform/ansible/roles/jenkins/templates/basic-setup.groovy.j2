@@ -1,13 +1,14 @@
 import jenkins.model.*
 import hudson.security.*
 import jenkins.install.*
+import jenkins.util.*
 
 def instance = Jenkins.getInstance()
 
 // Skip setup wizard
-if (!instance.installState.isSetupComplete()) {
-    InstallState.INITIAL_SETUP_COMPLETED.initializeState()
-}
+def installState = InstallState.INITIAL_SETUP_COMPLETED
+InstallState.INITIAL_SETUP_COMPLETED.initializeState()
+instance.setInstallState(installState)
 
 // Set Jenkins URL
 def jenkinsUrl = "{{ jenkins_url }}"
