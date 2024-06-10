@@ -11,7 +11,7 @@ module "jenkins_controller" {
     template_name     = var.template_name
     network_bridge    = var.network_bridge
     memory            = var.memory
-    name              = var.name
+    name              = "${var.name}-${var.environment}"
 }
 
 

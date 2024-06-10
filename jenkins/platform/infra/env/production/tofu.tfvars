@@ -5,5 +5,5 @@ full_clone        = true
 template_name     = "ubuntu-server-beta"
 network_bridge    = "vmbr0"
 memory            = 4128
-name              = "jenkins-prod"
+name              = "jenkins"
 environment       = "prod"
