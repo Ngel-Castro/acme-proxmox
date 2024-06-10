@@ -5,3 +5,7 @@
 */*/*/terraform.tfstate.backup
 */*/*/.terraform.tfstate.lock.info
 */*/*/inventory.yaml
+*/*/*/terraform.tfstate.d
+*/*/*/.terraform.lock.hcl
+.terraform
+terraform.tfstate.d/development

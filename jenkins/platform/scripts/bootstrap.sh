@@ -10,24 +10,34 @@ export SERVER_SSH_KEY=~/.ssh/cluster_alma
 
 echo "Bootstrapping Jenkins"
 
-
 echo "sourcing secrets..."
 source $SECRETS_FILE
-
 
 echo "Initializing opentofu"
 initialLocation=$(pwd)
 cd $JENKINS_PLATFORM_INFRA
 tofu init
 
+export WORKSPACE_NAME=$ENV
+
+# Check if the workspace already exists
+if tofu workspace list | grep -q "$WORKSPACE_NAME"; then
+  echo "Workspace $WORKSPACE_NAME already exists. Selecting it."
+  tofu workspace select "$WORKSPACE_NAME"
+else
+  echo "Workspace $WORKSPACE_NAME does not exist. Creating it."
+  tofu workspace new "$WORKSPACE_NAME"
+fi
+
 echo "Deploying infrastructure"
 tofu plan -var-file=${JENKINS_VARS} -var="proxmox_token_id=${PROXMOX_TOKEN_ID}" -var="proxmox_token_secret=${PROXMOX_TOKEN_SECRET}"
 tofu apply --auto-approve -var-file=${JENKINS_VARS} -var="proxmox_token_id=${PROXMOX_TOKEN_ID}" -var="proxmox_token_secret=${PROXMOX_TOKEN_SECRET}"
 echo "Moving inventory YAML to inventory location in ansible"
-cp inventory_dev.yaml $initialLocation/${JENKINS_PLATFORM_ANSIBLE}/inventory/ci/
+cp inventory_${ENV}.yaml $initialLocation/${JENKINS_PLATFORM_ANSIBLE}/inventory/ci/
 
 cd $initialLocation
 cd jenkins
+ls -la ${JENKINS_PLATFORM_ANSIBLE}/inventory/ci/inventory_${ENV}.yaml
 
 echo "Running ansible"
 

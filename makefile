@@ -1,8 +1,8 @@
 bootstrap:
 	$(info ************  DEVELOPMENT ************)
-	sh jenkins/platform/scripts/bootstrap.sh development
+	sh jenkins/platform/scripts/bootstrap.sh dev
 	$(info ************  PRODUCTION ************)
-	# sh jenkins/platform/scripts/bootstrap.sh production
+	#sh jenkins/platform/scripts/bootstrap.sh prod
 
 
 cleanup:
