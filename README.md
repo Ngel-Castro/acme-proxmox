@@ -47,4 +47,4 @@ No requirements.
 | Name | Description |
 |------|-------------|
 | <a name="output_vm-id"></a> [vm-id](#output\_vm-id) | Virtual Machine ID |
-| <a name="output_vm-ip"></a> [vm-ip](#output\_vm-ip) | The IP address of the Pi-hole VM |
+| <a name="output_vm-ip"></a> [vm-ip](#output\_vm-ip) | The IP address of the VM |
