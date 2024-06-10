@@ -90,3 +90,5 @@
   - workflow-support
   - ws-cleanup
   jenkins_url: "http://{{ controller_ip }}:8080"
+  github_username: "{{ git_user }}"
+  github_token: "{{ git_token }}"

@@ -30,7 +30,7 @@ cd jenkins
 
 echo "Running ansible"
 
-ansible-playbook site.yml --extra-vars "cluster_ssh_key=${SERVER_SSH_KEY} ansible_sudo_pass=$CLUSTER_PASSWORD"
+ansible-playbook site.yml --extra-vars "cluster_ssh_key=${SERVER_SSH_KEY} ansible_sudo_pass=$CLUSTER_PASSWORD git_user=${GITHUB_USERNAME} git_token=${GITHUB_TOKEN}"
 
 
 
