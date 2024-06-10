@@ -4,8 +4,11 @@
 */*/*/terraform.tfstate
 */*/*/terraform.tfstate.backup
 */*/*/.terraform.tfstate.lock.info
-*/*/*/inventory.yaml
+*/*/*/inventory_dev.yaml
+*/*/*/inventory_prod.yaml
 */*/*/terraform.tfstate.d
 */*/*/.terraform.lock.hcl
 .terraform
 terraform.tfstate.d/development
+terraform.tfstate.d/dev
+terraform.tfstate.d/prod
