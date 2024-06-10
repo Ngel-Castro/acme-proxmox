@@ -37,9 +37,9 @@ cp inventory_${ENV}.yaml $initialLocation/jenkins/${JENKINS_PLATFORM_ANSIBLE}/in
 
 cd $initialLocation
 cd jenkins
-ls -la ${JENKINS_PLATFORM_ANSIBLE}/inventory/ci/inventory_${ENV}.yaml
 
 echo "Running ansible"
+export INVENTORY_FILE=${JENKINS_PLATFORM_ANSIBLE}/inventory/ci/inventory_${ENV}.yaml
 
-ansible-playbook site.yml --extra-vars "cluster_ssh_key=${SERVER_SSH_KEY} ansible_sudo_pass=$CLUSTER_PASSWORD git_user=${GITHUB_USERNAME} git_token=${GITHUB_TOKEN}"
+ansible-playbook site.yml -i ${INVENTORY_FILE} --extra-vars "cluster_ssh_key=${SERVER_SSH_KEY} ansible_sudo_pass=$CLUSTER_PASSWORD git_user=${GITHUB_USERNAME} git_token=${GITHUB_TOKEN}"
 
