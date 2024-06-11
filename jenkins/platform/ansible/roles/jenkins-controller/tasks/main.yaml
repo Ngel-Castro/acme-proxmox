@@ -5,26 +5,31 @@
     state: present
     user: "{{ admin_user }}"
     commands: ALL
+  when: not bootstrapped_file.stat.exists
 
 - name: Install OpenJDK 21
-  apt:
+  ansible.builtin.apt:
     name: openjdk-21-jdk
     state: present
+  when: not bootstrapped_file.stat.exists
 
 - name: Download Jenkins repository key
   ansible.builtin.command:
     cmd: "curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key -o /tmp/jenkins-keyring.gpg"
   register: result
+  when: not bootstrapped_file.stat.exists
 
 - name: Add Jenkins repository key
   ansible.builtin.command:
     cmd: "gpg --dearmor -o /usr/share/keyrings/jenkins-keyring.gpg /tmp/jenkins-keyring.gpg"
   register: result
+  when: not bootstrapped_file.stat.exists
 
 - name: Add Jenkins repository
   ansible.builtin.apt_repository:
     repo: 'deb [signed-by=/usr/share/keyrings/jenkins-keyring.gpg] https://pkg.jenkins.io/debian-stable binary/'
     state: present
+  when: not bootstrapped_file.stat.exists
 
 - name: Update APT cache after adding Jenkins repository
   ansible.builtin.apt:
@@ -34,12 +39,14 @@
   ansible.builtin.apt:
     name: jenkins
     state: present
+  when: not bootstrapped_file.stat.exists
 
 - name: Ensure Jenkins is started and enabled
   ansible.builtin.systemd:
     name: jenkins
     enabled: yes
     state: started
+  when: not bootstrapped_file.stat.exists
 
 - name: Create init.groovy.d directory
   ansible.builtin.file:
@@ -48,6 +55,7 @@
     owner: jenkins
     group: jenkins
     mode: 0755
+  when: not bootstrapped_file.stat.exists
 
 - name: Copy Groovy script template to skip setup wizard and install plugins
   ansible.builtin.template:
@@ -58,9 +66,10 @@
     mode: 0644
   notify:
     - Restart Jenkins
+  when: not bootstrapped_file.stat.exists
 
 - name: Copy Groovy script to add GitHub credentials
-  template:
+  ansible.builtin.template:
     src: templates/add-github-credential.groovy.j2
     dest: /var/lib/jenkins/init.groovy.d/add-github-credential.groovy
     owner: jenkins
@@ -68,9 +77,10 @@
     mode: 0644
   notify:
     - Restart Jenkins
+  when: not bootstrapped_file.stat.exists
 
 - name: Copy Groovy script to create pipeline job
-  template:
+  ansible.builtin.template:
     src: templates/create-pipeline-job.groovy.j2
     dest: /var/lib/jenkins/init.groovy.d/create-pipeline-job.groovy
     owner: jenkins
@@ -78,8 +88,16 @@
     mode: 0644
   notify:
     - Restart Jenkins
+  when: not bootstrapped_file.stat.exists
 
 - name: Main restart
-  service:
+  ansible.builtin.service:
     name: jenkins
     state: restarted
+  when: not bootstrapped_file.stat.exists
+
+- name: Create bootstrapped file
+  ansible.builtin.file:
+    path: "{{ ansible_user_dir }}/bootstrapped"
+    state: touch
+  when: not bootstrapped_file.stat.exists
