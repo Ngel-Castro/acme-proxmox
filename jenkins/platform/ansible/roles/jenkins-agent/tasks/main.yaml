@@ -1,0 +1,11 @@
+---
+- name: Install openTofu
+  get_url:
+    url: "https://get.opentofu.org/install-opentofu.sh"
+    dest: "/tmp/install-opentofu.sh"
+    mode: '0755'
+
+- name: Run the bash script
+  command: "/tmp/install-opentofu.sh --install-method deb"
+  args:
+    creates: "/tmp/script/output"

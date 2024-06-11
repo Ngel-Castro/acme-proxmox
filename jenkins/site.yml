@@ -31,3 +31,8 @@
   become: true
   roles:
     - role: jenkins-controller
+
+- hosts: jenkins
+  become: true
+  roles:
+    - role: jenkins-agent
