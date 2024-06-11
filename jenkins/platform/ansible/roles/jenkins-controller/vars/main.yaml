@@ -72,6 +72,7 @@ plugin_names:
 - snakeyaml-api
 - ssh-credentials
 - ssh-slaves
+- ssh-agent
 - structs
 - theme-manager
 - timestamper
