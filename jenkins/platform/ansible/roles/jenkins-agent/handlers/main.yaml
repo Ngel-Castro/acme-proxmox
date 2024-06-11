@@ -1,3 +1,4 @@
+---
 - name: Restart Jenkins
   service:
     name: jenkins
