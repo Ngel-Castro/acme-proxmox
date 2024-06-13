@@ -7,7 +7,7 @@ export JENKINS_PLATFORM_ANSIBLE=platform/ansible/
 ## TODO change path to be more absolute. right now the assumption is that the .tfvars are inside `jenkins/platform` folder.
 export JENKINS_VARS=env/${ENV}/tofu.tfvars
 export SERVER_SSH_KEY=~/.ssh/cluster_alma
-export ADMIN_SSH_KEY=~/.ssh/mac-key
+export ADMIN_SSH_KEY=~/.ssh/cluster_alma
 
 echo "Bootstrapping Jenkins"
 
