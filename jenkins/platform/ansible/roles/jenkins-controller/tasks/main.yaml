@@ -90,8 +90,8 @@
 
 - name: Copy Groovy script to add admins sshkey
   ansible.builtin.template:
-    src: templates/add-sshkey.groovy.groovy.j2
-    dest: /var/lib/jenkins/init.groovy.d/add-sshkey.groovy.groovy
+    src: templates/add-sshkey.groovy.j2
+    dest: /var/lib/jenkins/init.groovy.d/add-sshkey.groovy
     owner: jenkins
     group: jenkins
     mode: 0644
