@@ -1,0 +1,25 @@
+import jenkins.model.*
+import com.cloudbees.plugins.credentials.*
+import com.cloudbees.plugins.credentials.domains.*
+import com.cloudbees.jenkins.plugins.sshcredentials.impl.*
+import hudson.util.Secret
+
+// Define the ID, description, and username for the SSH key
+def credentialId = "ssh-key-credential"
+def description = "Admin pem for web servers"
+def username = "{{ admin_user }}"
+def sshKeyFilePath = "/tmp/admin.pem"
+
+// Read the SSH key file content
+def sshKeyContent = new File(sshKeyFilePath).text
+
+// Create the SSH user private key credentials
+def privateKeySource = new BasicSSHUserPrivateKey.DirectEntryPrivateKeySource(sshKeyContent)
+def credentials = new BasicSSHUserPrivateKey(CredentialsScope.GLOBAL, credentialId, username, privateKeySource, null, description)
+
+// Add the credentials to the Jenkins credentials store
+def store = Jenkins.instance.getExtensionList('com.cloudbees.plugins.credentials.SystemCredentialsProvider')[0].getStore()
+store.addCredentials(Domain.global(), credentials)
+
+// Log the action for verification
+println "SSH key credentials added with ID: ${credentialId}"

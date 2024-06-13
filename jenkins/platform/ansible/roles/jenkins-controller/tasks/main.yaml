@@ -48,6 +48,15 @@
     state: started
   when: not bootstrapped_file.stat.exists
 
+- name: Copy admin key file from the local machine to jenkins controller
+  ansible.builtin.copy:
+    src: "{{ admin_key_location }}"
+    dest: /tmp/admin.pem
+    owner: jenkins
+    group: jenkins
+    mode: 0644
+  when: not bootstrapped_file.stat.exists
+
 - name: Create init.groovy.d directory
   ansible.builtin.file:
     path: /var/lib/jenkins/init.groovy.d
@@ -68,10 +77,21 @@
     - Restart Jenkins
   when: not bootstrapped_file.stat.exists
 
-- name: Copy Groovy script to add GitHub credentials
+- name: Copy Groovy script to add credentials
   ansible.builtin.template:
-    src: templates/add-github-credential.groovy.j2
-    dest: /var/lib/jenkins/init.groovy.d/add-github-credential.groovy
+    src: templates/add-credential.groovy.j2
+    dest: /var/lib/jenkins/init.groovy.d/add-credential.groovy
+    owner: jenkins
+    group: jenkins
+    mode: 0644
+  notify:
+    - Restart Jenkins
+  when: not bootstrapped_file.stat.exists
+
+- name: Copy Groovy script to add admins sshkey
+  ansible.builtin.template:
+    src: templates/add-sshkey.groovy.groovy.j2
+    dest: /var/lib/jenkins/init.groovy.d/add-sshkey.groovy.groovy
     owner: jenkins
     group: jenkins
     mode: 0644
