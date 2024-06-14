@@ -2,7 +2,7 @@
 
 export ENV=$1
 
-export SECRETS_FILE=~/.personal_vault/todopoderoso
+export SECRETS_FILE=.env
 export JENKINS_PLATFORM_INFRA=jenkins/platform/infra/
 ## TODO change path to be more absolute. right now the assumption is that the .tfvars are inside `jenkins/platform` folder.
 export JENKINS_VARS=env/${ENV}/tofu.tfvars
@@ -13,6 +13,7 @@ echo "sourcing secrets..."
 source $SECRETS_FILE
 
 echo "Initializing opentofu"
+cd $JENKINS_PLATFORM_INFRA
 tofu init
 export WORKSPACE_NAME=$ENV
 
