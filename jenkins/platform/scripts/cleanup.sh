@@ -26,7 +26,6 @@ else
   tofu workspace new "$WORKSPACE_NAME"
 fi
 initialLocation=$(pwd)
-cd $JENKINS_PLATFORM_INFRA
 tofu destroy --auto-approve -var-file=${JENKINS_VARS} -var="proxmox_token_id=${PROXMOX_TOKEN_ID}" -var="proxmox_token_secret=${PROXMOX_TOKEN_SECRET}"
 
 
