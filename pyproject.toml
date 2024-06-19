@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "imta"
+name = "acme"
 version = "0.1.0"
-description = "Scripts to run IMTA POC for platform engineering"
+description = "Scripts to run ACME POC for platform engineering"
 authors = ["Angel Castro <castrobasurto.angel@gmail.com>"]
 license = "MIT"
 readme = "README.md"
