@@ -10,9 +10,9 @@ variable "vms" {
         memory          = number
         cores           = number
         tags            = string
-        ip              = string
-        vmid            = number
-        gw              = string
+        ip              = optional(string, "dhcp")
+        vmid            = optional(number, null)
+        gw              = optional(string, null)
     }))
     default = [
         {
@@ -26,9 +26,6 @@ variable "vms" {
             memory          = 2048
             cores           = 2
             tags            = "tofu"
-            ip              = "192.168.0.200/24"
-            vmid            = 200
-            gw              = "192.168.0.1"
         }
     ]
 }
