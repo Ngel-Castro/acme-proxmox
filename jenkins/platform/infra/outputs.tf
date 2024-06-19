@@ -1,8 +1,8 @@
 output "vm-ip" {
-    value = module.jenkins_controller.vm_ip
-    description = "The IP address of the VM"
+    value = module.vms_qemu.vm_ips
+    description = "The IP address(es) of the VM(s)"
 }
 output "vm-id" {
-    value = module.jenkins_controller.vm_id
-    description = "Virtual Machine ID"
+    value = module.vms_qemu.vm_vmids
+    description = "Virtual Machine ID(s)"
 }
