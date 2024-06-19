@@ -8,7 +8,38 @@
 - name: Run the bash script
   ansible.builtin.command: "/tmp/install-opentofu.sh --install-method deb"
   args:
-    creates: "/tmp/script/output"
+    creates: "/tmp/script/output-opentofu"
+
+- name: Add HashiCorp GPG key
+  apt_key:
+    url: https://apt.releases.hashicorp.com/gpg
+    state: present
+
+- name: Set distribution codename fact
+  set_fact:
+    distro_codename: "{{ ansible_distribution_release }}"
+
+- name: Add HashiCorp repository
+  apt_repository:
+    repo: "deb [arch=amd64] https://apt.releases.hashicorp.com {{ distro_codename }} main"
+    state: present
+
+- name: Update APT package index
+  apt:
+    update_cache: yes
+
+- name: Install Packer
+  apt:
+    name: packer
+    state: latest
+
+- name: Verify Packer installation
+  command: packer version
+  register: packer_version_output
+
+- name: Display Packer version
+  debug:
+    msg: "Packer version installed: {{ packer_version_output.stdout }}"
 
 - name: Copy Groovy script to create pipeline job
   ansible.builtin.template:
