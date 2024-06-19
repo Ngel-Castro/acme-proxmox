@@ -9,7 +9,7 @@ module "vms_qemu" {
     environment             = var.environment
 }
 
-
+## TODO: Better handle the creation of the inventory to execute ansible
 # data "template_file" "inventory" {
 #   template = file("${path.module}/inventory.tpl")
 
