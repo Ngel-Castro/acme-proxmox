@@ -8,7 +8,26 @@
 - name: Run the bash script
   ansible.builtin.command: "/tmp/install-opentofu.sh --install-method deb"
   args:
-    creates: "/tmp/script/output"
+    creates: "/tmp/script/output-opentofu"
+
+- name: getting HC GPG key
+  ansible.builtin.command: "curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -"
+  args:
+    creates: "/tmp/script/output-packer"
+
+- name: getting HC GPG key
+  ansible.builtin.command: "sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main""
+  args:
+    creates: "/tmp/script/output-packer"
+
+- name: Update APT cache after adding HC repository
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: Install Packer
+  ansible.builtin.apt:
+    name: packer
+    state: present
 
 - name: Copy Groovy script to create pipeline job
   ansible.builtin.template:
