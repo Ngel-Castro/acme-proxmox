@@ -10,24 +10,36 @@
   args:
     creates: "/tmp/script/output-opentofu"
 
-- name: getting HC GPG key
-  ansible.builtin.command: "curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -"
-  args:
-    creates: "/tmp/script/output-packer"
+- name: Add HashiCorp GPG key
+  apt_key:
+    url: https://apt.releases.hashicorp.com/gpg
+    state: present
 
-- name: getting HC GPG key
-  ansible.builtin.command: "sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main""
-  args:
-    creates: "/tmp/script/output-packer"
+- name: Set distribution codename fact
+  set_fact:
+    distro_codename: "{{ ansible_distribution_release }}"
 
-- name: Update APT cache after adding HC repository
-  ansible.builtin.apt:
+- name: Add HashiCorp repository
+  apt_repository:
+    repo: "deb [arch=amd64] https://apt.releases.hashicorp.com {{ distro_codename }} main"
+    state: present
+
+- name: Update APT package index
+  apt:
     update_cache: yes
 
 - name: Install Packer
-  ansible.builtin.apt:
+  apt:
     name: packer
-    state: present
+    state: latest
+
+- name: Verify Packer installation
+  command: packer version
+  register: packer_version_output
+
+- name: Display Packer version
+  debug:
+    msg: "Packer version installed: {{ packer_version_output.stdout }}"
 
 - name: Copy Groovy script to create pipeline job
   ansible.builtin.template:
