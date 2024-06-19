@@ -1,4 +1,4 @@
 ---
 github_username: "{{ git_user }}"
 github_token: "{{ git_token }}"
-environment: "{{ env_value }}"
+environment: "{{ env }}"
