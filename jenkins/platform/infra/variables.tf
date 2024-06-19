@@ -25,6 +25,12 @@ variable "storage" {
   default     = "samsung_ssd"
 }
 
+variable "storage_size" {
+  description = "Storage location in PROXMOX node"
+  type        = number
+  default     = 32
+}
+
 variable "full_clone" {
   description = "If you required full clone or not"
   type        = bool

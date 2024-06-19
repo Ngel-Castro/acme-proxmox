@@ -10,8 +10,8 @@ import com.cloudbees.plugins.credentials.SystemCredentialsProvider
 
 def jenkins = Jenkins.getInstance()
 
-def jobName = "codeigniter demo"
-def repoUrl = "https://github.com/{{github_username}}/codeigniter_demo.git"
+def jobName = "ubuntu-base-pipeline"
+def repoUrl = "https://github.com/Ngel-Castro/ubuntu-base.git"
 
 def job = jenkins.getItem(jobName)
 if (job == null) {
@@ -20,7 +20,7 @@ if (job == null) {
 
 def scm = new GitSCM(
     [new UserRemoteConfig(repoUrl, null, null, 'github-credentials')],
-    [new BranchSpec("*/main")],
+    [new BranchSpec("*/feature/jenkinsfile")],
     false,
     [],
     null,
@@ -28,9 +28,10 @@ def scm = new GitSCM(
     []
 )
 
-job.setDefinition(new CpsScmFlowDefinition(scm, 'Jenkinsfile'))
+job.setDefinition(new CpsScmFlowDefinition(scm, 'jenkinsfile'))
 
 job.save()
 
-// Trigger the first build
+{% if environment == 'prod' %}
 job.scheduleBuild2(0)
+{% endif %}

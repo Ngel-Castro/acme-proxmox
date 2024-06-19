@@ -12,7 +12,8 @@ instance.setInstallState(installState)
 
 // Set Jenkins URL
 def jenkinsUrl = "{{ jenkins_url }}"
-instance.setSystemMessage("Jenkins URL is set to: " + jenkinsUrl)
+def environment = "{{ environment }}"
+instance.setSystemMessage("Jenkins " + environment + " URL is set to: " + jenkinsUrl)
 def jenkinsLocationConfig = JenkinsLocationConfiguration.get()
 jenkinsLocationConfig.setUrl(jenkinsUrl)
 jenkinsLocationConfig.save()

@@ -7,6 +7,7 @@ module "jenkins_controller" {
     proxmox_token_secret = var.proxmox_token_secret
     target_node       = var.target_node
     storage           = var.storage
+    storage_size      = var.storage_size
     full_clone        = var.full_clone
     template_name     = var.template_name
     network_bridge    = var.network_bridge

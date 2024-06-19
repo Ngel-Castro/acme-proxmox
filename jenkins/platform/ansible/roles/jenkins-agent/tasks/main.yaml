@@ -41,10 +41,18 @@
   debug:
     msg: "Packer version installed: {{ packer_version_output.stdout }}"
 
-- name: Copy Groovy script to create pipeline job
+- name: Copy Groovy script to create base image pipeline job
   ansible.builtin.template:
-    src: templates/create-pipeline-job.groovy.j2
-    dest: /var/lib/jenkins/init.groovy.d/create-pipeline-job.groovy
+    src: templates/create-base-pipelines.groovy.j2
+    dest: /var/lib/jenkins/init.groovy.d/create-base-pipelines.groovy
+    owner: jenkins
+    group: jenkins
+    mode: 0644
+
+- name: Copy Groovy script to create php pipeline job
+  ansible.builtin.template:
+    src: templates/create-php-pipeline-job.groovy.j2
+    dest: /var/lib/jenkins/init.groovy.d/create-php-pipeline-job.groovy
     owner: jenkins
     group: jenkins
     mode: 0644
