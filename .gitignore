@@ -13,3 +13,4 @@ terraform.tfstate.d/development
 terraform.tfstate.d/dev
 terraform.tfstate.d/prod
 .env
+jenkins/platform/infra/.terraform.lock.hcl

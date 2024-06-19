@@ -1,3 +1,4 @@
+environment       = "dev"
 vms = [
     { 
         name            = "jenkins"
@@ -24,4 +25,3 @@ vms = [
         tags            = "tofu"
     }
 ]
-environment       = "dev"
