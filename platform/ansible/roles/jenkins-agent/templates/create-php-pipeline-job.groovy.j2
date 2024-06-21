@@ -31,7 +31,3 @@ def scm = new GitSCM(
 job.setDefinition(new CpsScmFlowDefinition(scm, 'Jenkinsfile'))
 
 job.save()
-
-{% if platform_environment == 'prod' %}
-job.scheduleBuild2(0)
-{% endif %}
