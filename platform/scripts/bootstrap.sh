@@ -39,7 +39,7 @@ cd $initialLocation
 cd platform
 
 echo "Running ansible"
-export INVENTORY_FILE="${PLATFORM_ANSIBLE}/inventory/ci/inventory_${ENV}.yaml"
+export INVENTORY_FILE=${PLATFORM_ANSIBLE}/inventory/ci/inventory_${ENV}.yaml
 
 ansible-playbook site.yml -i ${INVENTORY_FILE} --extra-vars "platform_environment=${ENV} cluster_ssh_key=${SERVER_SSH_KEY} ansible_sudo_pass=$CLUSTER_PASSWORD git_user=${GITHUB_USERNAME} git_token=${GITHUB_TOKEN} proxmox_token_id=${PROXMOX_TOKEN_ID} proxmox_token_secret=${PROXMOX_TOKEN_SECRET} ssh_admin_key_path=${ADMIN_SSH_KEY}"
 
