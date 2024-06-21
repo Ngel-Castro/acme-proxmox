@@ -1,0 +1,43 @@
+---
+- hosts: all
+  gather_facts: true
+  become: true
+  tasks:
+    - name: Update and upgrade APT packages
+      ansible.builtin.apt:
+        update_cache: yes
+        upgrade: yes
+
+    - name: Install Docker
+      ansible.builtin.apt:
+        name: 
+          - docker.io
+          - docker-compose
+        state: present
+
+    - name: Ensure Docker service is started and enabled
+      ansible.builtin.systemd:
+        name: docker
+        enabled: yes
+        state: started
+
+    - name: Add current user to the Docker group
+      ansible.builtin.user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
+
+    - name: Check for bootstrapped file
+      ansible.builtin.stat:
+        path: "{{ ansible_user_dir }}/bootstrapped"
+      register: bootstrapped_file
+
+- hosts: jenkins
+  become: true
+  roles:
+    - role: jenkins-controller
+
+- hosts: jenkins
+  become: true
+  roles:
+    - role: jenkins-agent

@@ -1,0 +1,47 @@
+import jenkins.model.*
+import hudson.security.*
+import jenkins.install.*
+import jenkins.util.*
+
+def instance = Jenkins.getInstance()
+
+// Skip setup wizard
+def installState = InstallState.INITIAL_SETUP_COMPLETED
+InstallState.INITIAL_SETUP_COMPLETED.initializeState()
+instance.setInstallState(installState)
+
+// Set Jenkins URL
+def jenkinsUrl = "{{ jenkins_url }}"
+def environment = "{{ platform_environment }}"
+instance.setSystemMessage("Jenkins " + environment + " URL is set to: " + jenkinsUrl)
+def jenkinsLocationConfig = JenkinsLocationConfiguration.get()
+jenkinsLocationConfig.setUrl(jenkinsUrl)
+jenkinsLocationConfig.save()
+
+// Set up security realm and create admin user
+def hudsonRealm = new HudsonPrivateSecurityRealm(false)
+hudsonRealm.createAccount('admin', 'changeme')
+instance.setSecurityRealm(hudsonRealm)
+
+// Set up authorization strategy
+def strategy = new FullControlOnceLoggedInAuthorizationStrategy()
+strategy.setAllowAnonymousRead(false)
+instance.setAuthorizationStrategy(strategy)
+
+// Install minimal set of plugins
+def pluginNames = {{ plugin_names | to_json }}
+def updateCenter = Jenkins.instance.updateCenter
+
+pluginNames.each { pluginName ->
+    if (!Jenkins.instance.pluginManager.getPlugin(pluginName)) {
+        def plugin = updateCenter.getPlugin(pluginName)
+        if (plugin) {
+            def installFuture = plugin.deploy()
+            installFuture.get()
+        } else {
+            println("Plugin ${pluginName} not found in update center")
+        }
+    }
+}
+
+instance.save()
