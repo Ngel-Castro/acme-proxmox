@@ -1,0 +1,19 @@
+all:
+  children:
+      jenkins:
+        children:
+          controller:
+            hosts:
+              controller1:
+                ansible_host: "192.168.0.162"
+                ansible_user: "administrator"
+                ansible_ssh_private_key_file: '{{ cluster_ssh_key }}'
+                platform_environment: '{{ platform_environment }}'
+      harbor:
+        hosts:
+          harbor1:
+            ansible_host: "192.168.0.175"
+            ansible_user: "administrator"
+            ansible_ssh_private_key_file: '{{ cluster_ssh_key }}'
+            platform_environment: '{{ platform_environment }}'
+  

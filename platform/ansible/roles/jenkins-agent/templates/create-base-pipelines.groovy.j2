@@ -32,6 +32,6 @@ job.setDefinition(new CpsScmFlowDefinition(scm, 'jenkinsfile'))
 
 job.save()
 
-{% if environment == 'prod' %}
+{% if platform_environment == 'prod' %}
 job.scheduleBuild2(0)
 {% endif %}
