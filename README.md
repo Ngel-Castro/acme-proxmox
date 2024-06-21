@@ -5,7 +5,10 @@ host the infra in any cloud provider
 
 ## Requirements
 
-No requirements.
+- Ansible
+- opentofu
+- poetry
+- Packer
 
 ## Providers
 
@@ -31,7 +34,6 @@ No requirements.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_default_password"></a> [default\_password](#input\_default\_password) | Default LXC vm password | `string` | `"changeme"` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | on which enviroment the project will be running | `string` | `"dev"` | no |
 | <a name="input_proxmox_host"></a> [proxmox\_host](#input\_proxmox\_host) | Value for proxmox cluster/server | `string` | `"https://192.168.0.131:8006/api2/json"` | no |
 | <a name="input_proxmox_token_id"></a> [proxmox\_token\_id](#input\_proxmox\_token\_id) | Proxmox Token user@pam!token\_id | `string` | `"terraform-prov@pve!terraform"` | no |

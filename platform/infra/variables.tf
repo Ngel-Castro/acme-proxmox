@@ -51,9 +51,3 @@ variable "environment" {
   type        = string
   default     = "dev"
 }
-
-variable "default_password" {
-  description = "Default LXC vm password"
-  type        = string
-  default     = "changeme"
-}
