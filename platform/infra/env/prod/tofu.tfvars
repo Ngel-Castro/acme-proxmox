@@ -13,7 +13,7 @@ vms = [
         tags            = "tofu"
     },
     { 
-        name            = "harbor"
+        name            = "artifacts"
         target_node     = "proxmox"
         storage         = "Kingstone-data"
         storage_size    = 32

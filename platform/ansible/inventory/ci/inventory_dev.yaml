@@ -5,15 +5,17 @@ all:
           controller:
             hosts:
               controller1:
-                ansible_host: "192.168.0.211"
+                ansible_host: "192.168.0.16"
                 ansible_user: "administrator"
                 ansible_ssh_private_key_file: '{{ cluster_ssh_key }}'
                 platform_environment: '{{ platform_environment }}'
       artifacts:
-        hosts:
-          artifacts1:
-            ansible_host: "192.168.0.27"
-            ansible_user: "administrator"
-            ansible_ssh_private_key_file: '{{ cluster_ssh_key }}'
-            platform_environment: '{{ platform_environment }}'
+        children:
+          manager:
+            hosts:
+              artifacts1:
+                ansible_host: "192.168.0.66"
+                ansible_user: "administrator"
+                ansible_ssh_private_key_file: '{{ cluster_ssh_key }}'
+                platform_environment: '{{ platform_environment }}'
   
