@@ -4,34 +4,41 @@
     url: "https://get.opentofu.org/install-opentofu.sh"
     dest: "/tmp/install-opentofu.sh"
     mode: '0755'
+  when: not bootstrapped_file.stat.exists
 
 - name: Run the bash script
   ansible.builtin.command: "/tmp/install-opentofu.sh --install-method deb"
   args:
     creates: "/tmp/script/output-opentofu"
+  when: not bootstrapped_file.stat.exists
 
 - name: Add HashiCorp GPG key
   apt_key:
     url: https://apt.releases.hashicorp.com/gpg
     state: present
+  when: not bootstrapped_file.stat.exists
 
 - name: Set distribution codename fact
   set_fact:
     distro_codename: "{{ ansible_distribution_release }}"
+  when: not bootstrapped_file.stat.exists
 
 - name: Add HashiCorp repository
   apt_repository:
     repo: "deb [arch=amd64] https://apt.releases.hashicorp.com {{ distro_codename }} main"
     state: present
+  when: not bootstrapped_file.stat.exists
 
 - name: Update APT package index
   apt:
     update_cache: yes
+  when: not bootstrapped_file.stat.exists
 
 - name: Install Packer
   apt:
     name: packer
     state: latest
+  when: not bootstrapped_file.stat.exists
 
 - name: Verify Packer installation
   command: packer version
@@ -48,6 +55,7 @@
     owner: jenkins
     group: jenkins
     mode: 0644
+  when: not bootstrapped_file.stat.exists
 
 - name: Copy Groovy script to create php pipeline job
   ansible.builtin.template:
@@ -58,3 +66,10 @@
     mode: 0644
   notify:
     - Restart Jenkins
+  when: not bootstrapped_file.stat.exists
+
+- name: Create bootstrapped file
+  ansible.builtin.file:
+    path: "{{ ansible_user_dir }}/bootstrapped"
+    state: touch
+  when: not bootstrapped_file.stat.exists

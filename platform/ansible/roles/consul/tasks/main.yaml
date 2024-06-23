@@ -1,0 +1,43 @@
+---
+- name: Allow run sudo commands without password
+  community.general.sudoers:
+    name: admin_role
+    state: present
+    user: "{{ admin_user }}"
+    commands: ALL
+  when: not bootstrapped_file.stat.exists
+
+- name: Add HashiCorp GPG key
+  apt_key:
+    url: https://apt.releases.hashicorp.com/gpg
+    state: present
+  when: not bootstrapped_file.stat.exists
+
+- name: Set distribution codename fact
+  set_fact:
+    distro_codename: "{{ ansible_distribution_release }}"
+  when: not bootstrapped_file.stat.exists
+
+- name: Add HashiCorp repository
+  apt_repository:
+    repo: "deb [arch=amd64] https://apt.releases.hashicorp.com {{ distro_codename }} main"
+    state: present
+  when: not bootstrapped_file.stat.exists
+
+- name: Update APT package index
+  apt:
+    update_cache: yes
+  when: not bootstrapped_file.stat.exists
+
+- name: Install Consul
+  apt:
+    name: consul
+    state: latest
+
+- name: Verify consul installation
+  command: consul version
+  register: consul_version_output
+
+- name: Display consul version
+  debug:
+    msg: "Consul version installed: {{ consul_version_output.stdout }}"
