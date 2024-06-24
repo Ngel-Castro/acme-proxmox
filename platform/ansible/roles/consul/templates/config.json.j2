@@ -1,0 +1,10 @@
+{
+    "data_dir": "{{ consul_data_dir }}",
+    "log_level": "INFO",
+    "server": true,
+    "node_name": "consul-server",
+    "bootstrap_expect": 3,
+    "bind_addr": "0.0.0.0",
+    "retry_join": ["provider=aws tag_key=Name tag_value=consul-server"],
+    "encrypt": "{{ encryption_key }}"
+}

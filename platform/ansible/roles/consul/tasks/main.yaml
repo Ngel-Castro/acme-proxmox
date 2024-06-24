@@ -8,7 +8,7 @@
   when: not bootstrapped_file.stat.exists
 
 - name: Add HashiCorp GPG key
-  apt_key:
+  ansible.builtin.apt_key:
     url: https://apt.releases.hashicorp.com/gpg
     state: present
   when: not bootstrapped_file.stat.exists
@@ -19,28 +19,73 @@
   when: not bootstrapped_file.stat.exists
 
 - name: Add HashiCorp repository
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: "deb [arch=amd64] https://apt.releases.hashicorp.com {{ distro_codename }} main"
     state: present
   when: not bootstrapped_file.stat.exists
 
 - name: Update APT package index
-  apt:
+  ansible.builtin.apt:
     update_cache: yes
   when: not bootstrapped_file.stat.exists
 
 - name: Install Consul
-  apt:
+  ansible.builtin.apt:
     name: consul
     state: latest
 
 - name: Verify consul installation
-  command: consul version
+  ansible.builtin.command: consul version
   register: consul_version_output
 
 - name: Display consul version
-  debug:
+  ansible.builtin.debug:
     msg: "Consul version installed: {{ consul_version_output.stdout }}"
+
+- name: Create Consul user and group
+  ansible.builtin.user:
+    name: "{{ consul_user }}"
+    state: present
+    system: yes
+    home: "{{ consul_data_dir }}"
+    shell: /bin/false
+
+- name: Create Consul data and config directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ consul_user }}"
+    group: "{{ consul_group }}"
+    mode: '0755'
+  with_items:
+    - "{{ consul_data_dir }}"
+    - "{{ consul_config_dir }}"
+
+- name: Create consul service
+  ansible.builtin.template:
+    src: templates/config.json.j2
+    dest: "{{ consul_config_dir }}/config.json"
+    owner: "{{ consul_user }}"
+    group: "{{ consul_group }}"
+    mode: '0644'
+
+- name: Create consul service
+  ansible.builtin.template:
+    src: templates/consul.service.j2
+    dest: "{{ consul_service_file }}"
+    owner: "{{ consul_user }}"
+    group: "{{ consul_group }}"
+    mode: '0644'
+
+- name: Reload systemd to pick up new service
+  ansible.builtin.systemd:
+    daemon_reload: yes
+
+- name: Start and enable Consul service
+  ansible.builtin.systemd:
+    name: consul
+    state: started
+    enabled: yes
 
 - name: Create bootstrapped file
   ansible.builtin.file:
