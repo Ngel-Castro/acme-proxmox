@@ -117,7 +117,7 @@
 - name: Create policy for statefiles path
   uri:
     url: "http://{{ ansible_host }}:8500/v1/acl/policy"
-    method: POST
+    method: PUT
     headers:
       X-Consul-Token: "{{ acl_master_token }}"
     body: |
@@ -132,8 +132,8 @@
 
 - name: Create service account token
   uri:
-    url: "http://localhost:8500/v1/acl/token"
-    method: POST
+    url: "http://{{ ansible_host }}:8500/v1/acl/token"
+    method: PUT
     headers:
       X-Consul-Token: "{{ acl_master_token }}"
     body: |
