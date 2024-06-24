@@ -104,6 +104,58 @@
     enabled: yes
   when: not bootstrapped_file.stat.exists
 
+- name: Wait for Consul to be available
+  uri:
+    url: "http://{{ ansible_host }}:8500/v1/status/leader"
+    method: GET
+    status_code: 200
+  register: consul_status
+  until: consul_status.status == 200
+  retries: 10
+  delay: 5
+
+- name: Create policy for statefiles path
+  uri:
+    url: "http://{{ ansible_host }}:8500/v1/acl/policy"
+    method: POST
+    headers:
+      X-Consul-Token: "{{ acl_master_token }}"
+    body: |
+      {
+        "Name": "{{ statefiles_policy_name }}",
+        "Description": "{{ statefiles_policy_description }}",
+        "Rules": "path \"{{ statefiles_path }}\" { policy = \"write\" }"
+      }
+    body_format: json
+  register: statefiles_policy
+  when: not bootstrapped_file.stat.exist
+
+- name: Create service account token
+  uri:
+    url: "http://localhost:8500/v1/acl/token"
+    method: POST
+    headers:
+      X-Consul-Token: "{{ acl_master_token }}"
+    body: |
+      {
+        "Description": "Service account for accessing statefiles",
+        "Policies": [
+          {
+            "ID": "{{ statefiles_policy.json.ID }}"
+          }
+        ]
+      }
+    body_format: json
+  register: service_account_token
+  when: not bootstrapped_file.stat.exist
+
+- name: Save service account token to local file
+  delegate_to: localhost
+  ansible.builtin.copy:
+    content: "Service account token: {{ service_account_token.json.SecretID }}"
+    dest: "service_account_token.txt"
+  when: not bootstrapped_file.stat.exist
+
 - name: Create bootstrapped file
   ansible.builtin.file:
     path: "{{ ansible_user_dir }}/bootstrapped"
