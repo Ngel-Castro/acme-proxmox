@@ -128,7 +128,7 @@
       }
     body_format: json
   register: statefiles_policy
-  when: not bootstrapped_file.stat.exist
+  when: not bootstrapped_file.stat.exists
 
 - name: Create service account token
   uri:
@@ -147,14 +147,14 @@
       }
     body_format: json
   register: service_account_token
-  when: not bootstrapped_file.stat.exist
+  when: not bootstrapped_file.stat.exists
 
 - name: Save service account token to local file
   delegate_to: localhost
   ansible.builtin.copy:
     content: "Service account token: {{ service_account_token.json.SecretID }}"
     dest: "service_account_token.txt"
-  when: not bootstrapped_file.stat.exist
+  when: not bootstrapped_file.stat.exists
 
 - name: Create bootstrapped file
   ansible.builtin.file:
