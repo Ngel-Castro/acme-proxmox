@@ -3,8 +3,11 @@
     "log_level": "INFO",
     "server": true,
     "node_name": "consul-server",
-    "bootstrap_expect": 3,
-    "bind_addr": "0.0.0.0",
+    "retry_join": ["{{ ansible_host }}"],
+    "bind_addr": "{{ bind_address }}",
+    "ui": true,
+    "client_addr": "{{ bind_address }}",
     "advertise_addr": "{{ ansible_host }}",
-    "encrypt": "{{ consul_encryption_key }}"
+    "encrypt": "{{ consul_encryption_key }}",
+    "bootstrap_expect": {{ bootstrap_expect }}
 }

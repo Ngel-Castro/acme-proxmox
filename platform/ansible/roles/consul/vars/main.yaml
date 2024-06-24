@@ -4,3 +4,5 @@ consul_group: "consul"
 consul_data_dir: "/opt/consul"
 consul_config_dir: "/etc/consul.d"
 consul_service_file: "/etc/systemd/system/consul.service"
+bind_address: "0.0.0.0"
+bootstrap_expect: 3
