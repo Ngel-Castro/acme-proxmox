@@ -63,6 +63,17 @@
     - "{{ consul_config_dir }}"
   when: not bootstrapped_file.stat.exists
 
+- name: Generate Consul encryption key
+  command: /usr/bin/consul keygen
+  register: consul_keygen_result
+  when: not bootstrapped_file.stat.exists
+  
+
+- name: Set encryption key fact
+  set_fact:
+    consul_encryption_key: "{{ consul_keygen_result.stdout }}"
+  when: not bootstrapped_file.stat.exists
+
 - name: Create consul service
   ansible.builtin.template:
     src: templates/config.json.j2
