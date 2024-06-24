@@ -49,6 +49,7 @@
     system: yes
     home: "{{ consul_data_dir }}"
     shell: /bin/false
+  when: not bootstrapped_file.stat.exists
 
 - name: Create Consul data and config directories
   ansible.builtin.file:
@@ -60,6 +61,7 @@
   with_items:
     - "{{ consul_data_dir }}"
     - "{{ consul_config_dir }}"
+  when: not bootstrapped_file.stat.exists
 
 - name: Create consul service
   ansible.builtin.template:
@@ -68,6 +70,7 @@
     owner: "{{ consul_user }}"
     group: "{{ consul_group }}"
     mode: '0644'
+  when: not bootstrapped_file.stat.exists
 
 - name: Create consul service
   ansible.builtin.template:
@@ -76,16 +79,19 @@
     owner: "{{ consul_user }}"
     group: "{{ consul_group }}"
     mode: '0644'
+  when: not bootstrapped_file.stat.exists
 
 - name: Reload systemd to pick up new service
   ansible.builtin.systemd:
     daemon_reload: yes
+  when: not bootstrapped_file.stat.exists
 
 - name: Start and enable Consul service
   ansible.builtin.systemd:
     name: consul
     state: started
     enabled: yes
+  when: not bootstrapped_file.stat.exists
 
 - name: Create bootstrapped file
   ansible.builtin.file:
