@@ -41,3 +41,9 @@
 - name: Display consul version
   debug:
     msg: "Consul version installed: {{ consul_version_output.stdout }}"
+
+- name: Create bootstrapped file
+  ansible.builtin.file:
+    path: "{{ ansible_user_dir }}/bootstrapped"
+    state: touch
+  when: not bootstrapped_file.stat.exists
