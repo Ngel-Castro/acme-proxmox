@@ -1,0 +1,13 @@
+{
+    "data_dir": "{{ consul_data_dir }}",
+    "log_level": "INFO",
+    "server": true,
+    "node_name": "consul-server",
+    "retry_join": ["{{ ansible_host }}"],
+    "bind_addr": "{{ bind_address }}",
+    "ui": true,
+    "client_addr": "{{ bind_address }}",
+    "advertise_addr": "{{ ansible_host }}",
+    "encrypt": "{{ consul_encryption_key }}",
+    "bootstrap_expect": {{ bootstrap_expect }}
+}

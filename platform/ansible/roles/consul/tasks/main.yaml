@@ -76,7 +76,7 @@
 
 - name: Create consul service
   ansible.builtin.template:
-    src: templates/config.json.j2
+    src: templates/initial-config.json.j2
     dest: "{{ consul_config_dir }}/config.json"
     owner: "{{ consul_user }}"
     group: "{{ consul_group }}"
@@ -106,7 +106,7 @@
 
 - name: Wait for Consul to be available
   uri:
-    url: "http://{{ ansible_host }}:8500/v1/status/leader"
+    url: "http://localhost:8500/v1/status/leader"
     method: GET
     status_code: 200
   register: consul_status
@@ -114,50 +114,95 @@
   retries: 10
   delay: 5
 
+- name: Wait for 10 seconds
+  wait_for:
+    timeout: 10
+
+- name: Create policy for statefiles path using template
+  template:
+    src: "templates/statefiles_policy.json.j2"
+    dest: "/tmp/statefiles_policy.json"
+
+- name: Read statefiles policy file content
+  slurp:
+    src: "/tmp/statefiles_policy.json"
+  register: statefiles_policy_content
+
 - name: Create policy for statefiles path
   uri:
-    url: "http://{{ ansible_host }}:8500/v1/acl/policy"
+    url: "http://localhost:8500/v1/acl/policy"
     method: PUT
-    headers:
-      X-Consul-Token: "{{ acl_master_token }}"
-    body: |
-      {
-        "Name": "{{ statefiles_policy_name }}",
-        "Description": "{{ statefiles_policy_description }}",
-        "Rules": "path \"{{ statefiles_path }}\" { policy = \"write\" }"
-      }
+    body: "{{ statefiles_policy_content.content | b64decode }}"
     body_format: json
   register: statefiles_policy
-  when: not bootstrapped_file.stat.exists
+
+- name: Create agent token using template
+  template:
+    src: "templates/agent_token.json.j2"
+    dest: "/tmp/agent_token.json"
+
+- name: Read agent token file content
+  slurp:
+    src: "/tmp/agent_token.json"
+  register: agent_token_content
+
+- name: Create agent token
+  uri:
+    url: "http://localhost:8500/v1/acl/token"
+    method: put
+    body: "{{ agent_token_content.content | b64decode }}"
+    body_format: json
+  register: agent_token
+
+- name: Create service account token using template
+  template:
+    src: "templates/service_account_token.json.j2"
+    dest: "/tmp/service_account_token.json"
+    vars:
+      policy_id: "{{ statefiles_policy.json.ID }}"
+
+- name: Read service account token file content
+  slurp:
+    src: "/tmp/service_account_token.json"
+  register: service_account_token_content
 
 - name: Create service account token
   uri:
-    url: "http://{{ ansible_host }}:8500/v1/acl/token"
+    url: "http://localhost:8500/v1/acl/token"
     method: PUT
-    headers:
-      X-Consul-Token: "{{ acl_master_token }}"
-    body: |
-      {
-        "Description": "Service account for accessing statefiles",
-        "Policies": [
-          {
-            "ID": "{{ statefiles_policy.json.ID }}"
-          }
-        ]
-      }
+    body: "{{ service_account_token_content.content | b64decode }}"
     body_format: json
   register: service_account_token
+
+- name: Update Consul configuration with agent token
+  copy:
+    dest: "{{ consul_config_dir }}/agent_token.hcl"
+    content: |
+      acl {
+        tokens {
+          agent = "{{ agent_token.json.SecretID }}"
+        }
+      }
+    owner: "{{ consul_user }}"
+    group: "{{ consul_group }}"
+    mode: '0644'
+
+- name: Create consul service
+  ansible.builtin.template:
+    src: templates/secured-config.json.j2
+    dest: "{{ consul_config_dir }}/config.json"
+    owner: "{{ consul_user }}"
+    group: "{{ consul_group }}"
+    mode: '0644'
   when: not bootstrapped_file.stat.exists
 
-- name: Save service account token to local file
-  delegate_to: localhost
-  ansible.builtin.copy:
-    content: "Service account token: {{ service_account_token.json.SecretID }}"
-    dest: "service_account_token.txt"
-  when: not bootstrapped_file.stat.exists
+- name: Reload Consul to apply new agent token
+  systemd:
+    name: consul
+    state: restarted
 
-- name: Create bootstrapped file
-  ansible.builtin.file:
-    path: "{{ ansible_user_dir }}/bootstrapped"
-    state: touch
-  when: not bootstrapped_file.stat.exists
+# - name: Create bootstrapped file
+#   ansible.builtin.file:
+#     path: "{{ ansible_user_dir }}/bootstrapped"
+#     state: touch
+#   when: not bootstrapped_file.stat.exists
