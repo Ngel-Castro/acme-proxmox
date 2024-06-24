@@ -20,7 +20,7 @@ vms = [
         full_clone      = true
         template_name   = "ubuntu-server-base"
         network_bridge  = "vmbr0"
-        memory          = 2048
+        memory          = 4096
         cores           = 2
         tags            = "tofu"
     }
