@@ -1,23 +1,30 @@
+---
+- name: Create agent policy
+  ansible.builtin.template:
+    src: "templates/statefiles-policy.hcl.j2"
+    dest: "/tmp/statefiles-policy.hcl"
+    owner: "{{ consul_user }}"
+    group: "{{ consul_group }}"
+    mode: '0644'
+
+- name: Read statefiles policy file content
+  slurp:
+    src: "/tmp/statefiles-policy.hcl"
+  register: statefiles_policy_content
+
 - name: Create policy for statefiles path
   uri:
-    url: "http://{{ ansible_host }}:8500/v1/acl/policy"
-    method: POST
-    headers:
-      X-Consul-Token: "{{ acl_master_token }}"
-    body: |
-      {
-        "Name": "{{ statefiles_policy_name }}",
-        "Description": "{{ statefiles_policy_description }}",
-        "Rules": "path \"{{ statefiles_path }}\" { policy = \"write\" }"
-      }
+    url: "http://localhost:8500/v1/acl/policy"
+    method: PUT
+    body: "{{ statefiles_policy_content.content | b64decode }}"
     body_format: json
-  register: statefiles_policy
+  register: statefiles_polic
   when: not bootstrapped_file.stat.exists
 
 - name: Create service account token
   uri:
     url: "http://localhost:8500/v1/acl/token"
-    method: POST
+    method: PUT
     headers:
       X-Consul-Token: "{{ acl_master_token }}"
     body: |

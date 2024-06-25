@@ -1,0 +1,12 @@
+# statefile_policy.hcl
+
+# Policy for statefile access
+policy "{{ statefiles_policy_name }}" {
+  description = "{{ statefiles_policy_description }}"
+  path "{{ statefiles_path }}/*" {
+    capabilities = ["write", "read"]
+  }
+  key "{{ statefiles_path }}/*" {
+    capabilities = ["write", "read"]
+  }
+}
