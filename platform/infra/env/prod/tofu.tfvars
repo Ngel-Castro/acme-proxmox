@@ -9,7 +9,7 @@ vms = [
         template_name   = "ubuntu-server-base"
         network_bridge  = "vmbr0"
         memory          = 3072
-        cores           = 2
+        cores           = 4
         tags            = "tofu"
     },
     { 
@@ -21,7 +21,7 @@ vms = [
         template_name   = "ubuntu-server-base"
         network_bridge  = "vmbr0"
         memory          = 4096
-        cores           = 2
+        cores           = 4
         tags            = "tofu"
     }
 ]
