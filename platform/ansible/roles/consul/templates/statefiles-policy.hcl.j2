@@ -1,4 +1,4 @@
-# These control access to the key/value store.
+# These control access to the key/value store and sessions.
 key_prefix "" {
   policy = "read"
 }
@@ -12,5 +12,8 @@ key_prefix "configs/" {
   policy = "write"
 }
 key_prefix "instances/" {
+  policy = "write"
+}
+session "consul-server" {
   policy = "write"
 }
