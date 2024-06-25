@@ -99,6 +99,17 @@
     - Restart Jenkins
   when: not bootstrapped_file.stat.exists
 
+- name: Copy Groovy script to add consul SA token
+  ansible.builtin.template:
+    src: templates/add-secret.groovy.j2
+    dest: /var/lib/jenkins/init.groovy.d/add-secret.groovy
+    owner: jenkins
+    group: jenkins
+    mode: 0644
+  notify:
+    - Restart Jenkins
+  when: not bootstrapped_file.stat.exists
+
 
 - name: Main restart
   ansible.builtin.service:
