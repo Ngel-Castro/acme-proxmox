@@ -1,5 +1,5 @@
 ---
-- name: Create agent policy
+- name: Create stastefile policy
   ansible.builtin.template:
     src: "templates/statefiles-policy.hcl.j2"
     dest: "/tmp/statefiles-policy.hcl"
@@ -7,42 +7,17 @@
     group: "{{ consul_group }}"
     mode: '0644'
 
-- name: Read statefiles policy file content
-  slurp:
-    src: "/tmp/statefiles-policy.hcl"
-  register: statefiles_policy_content
+- name: Load stastefile policy into Consul
+  command: /usr/bin/consul acl policy create -name {{ statefiles_policy_name }} -description "{{ statefiles_policy_description }}"  -rules @/tmp/statefiles-policy.hcl -token={{ acl_master_token }}
+  register: statefiles_policy
+  until: statefiles_policy.rc == 0
+  retries: 5
+  delay: 10
 
-- name: Create policy for statefiles path
-  uri:
-    url: "http://localhost:8500/v1/acl/policy"
-    method: PUT
-    body: "{{ statefiles_policy_content.content | b64decode }}"
-    body_format: json
-  register: statefiles_polic
-  when: not bootstrapped_file.stat.exists
-
-- name: Create service account token
-  uri:
-    url: "http://localhost:8500/v1/acl/token"
-    method: PUT
-    headers:
-      X-Consul-Token: "{{ acl_master_token }}"
-    body: |
-      {
-        "Description": "Service account for accessing statefiles",
-        "Policies": [
-          {
-            "ID": "{{ statefiles_policy.json.ID }}"
-          }
-        ]
-      }
-    body_format: json
+- name: Generate sa token
+  command: /usr/bin/consul acl token create -description "Sa token" -policy-name {{ statefiles_policy_name }} -token={{ acl_master_token }}
   register: service_account_token
-  when: not bootstrapped_file.stat.exists
-
-- name: Save service account token to local file
-  delegate_to: localhost
-  ansible.builtin.copy:
-    content: "Service account token: {{ service_account_token.json.SecretID }}"
-    dest: "service_account_token.txt"
+  until: service_account_token.rc == 0
+  retries: 5
+  delay: 10
   when: not bootstrapped_file.stat.exists
