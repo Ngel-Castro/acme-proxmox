@@ -5,3 +5,12 @@ key_prefix "" {
 key_prefix "{{ statefiles_path }}" {
   policy = "write"
 }
+key_prefix "manifests/" {
+  policy = "write"
+}
+key_prefix "configs/" {
+  policy = "write"
+}
+key_prefix "instances/" {
+  policy = "write"
+}
