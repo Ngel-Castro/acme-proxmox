@@ -34,17 +34,17 @@
         append: yes
       when: not bootstrapped_file.stat.exists
 
-- hosts: jenkins
-  become: true
-  roles:
-    - role: jenkins-controller
-
-- hosts: jenkins
-  become: true
-  roles:
-    - role: jenkins-agent
-
 - hosts: artifacts
   become: true
   roles:
     - role: consul
+
+# - hosts: jenkins
+#   become: true
+#   roles:
+#     - role: jenkins-controller
+
+# - hosts: jenkins
+#   become: true
+#   roles:
+#     - role: jenkins-agent
