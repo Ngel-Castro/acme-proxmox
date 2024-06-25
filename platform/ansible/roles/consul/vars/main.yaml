@@ -6,5 +6,6 @@ consul_config_dir: "/etc/consul.d"
 consul_service_file: "/etc/systemd/system/consul.service"
 bind_address: "0.0.0.0"
 bootstrap_expect: 1
-acl_master_token: "{{ lookup('password', '/dev/null length=32 chars=ascii_letters,digits') }}"
-acl_agent_token: "{{ lookup('password', '/dev/null length=32 chars=ascii_letters,digits') }}"
+statefiles_policy_name: "statefiles-policy"
+statefiles_policy_description: "Policy for accessing opentofu statefiles path"
+statefiles_path: "statefiles/"

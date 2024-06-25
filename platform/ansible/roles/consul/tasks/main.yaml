@@ -17,12 +17,16 @@
   retries: 10
   delay: 5
 
-- name: Including acls; consul configuration tasks
+- name: Including acls consul configuration tasks
   ansible.builtin.include_tasks:
     file: consul-acl.yaml
 
-# - name: Create bootstrapped file
-#   ansible.builtin.file:
-#     path: "{{ ansible_user_dir }}/bootstrapped"
-#     state: touch
-#   when: not bootstrapped_file.stat.exists
+- name: Generate an statefiles token
+  ansible.builtin.include_tasks:
+    file: consul-statefiles.yaml
+
+- name: Create bootstrapped file
+  ansible.builtin.file:
+    path: "{{ ansible_user_dir }}/bootstrapped"
+    state: touch
+  when: not bootstrapped_file.stat.exists
