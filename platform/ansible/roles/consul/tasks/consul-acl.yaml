@@ -1,0 +1,28 @@
+---
+- name: Create agent policy
+  ansible.builtin.template:
+    src: "templates/agent-policy.hcl.j2"
+    dest: "/tmp/agent-policy.hcl"
+    owner: "{{ consul_user }}"
+    group: "{{ consul_group }}"
+    mode: '0644'
+
+- name: Load agent policy into Consul
+  command: /usr/bin/consul acl policy create -name agent-policy -rules @/tmp/agent-policy.hcl -token={{ acl_master_token }}
+  register: policy_creation
+  until: policy_creation.rc == 0
+  retries: 5
+  delay: 10
+
+- name: Generate agent token
+  command: /usr/bin/consul acl token create -description "Agent token" -policy-name agent-policy -token={{ acl_master_token }}
+  register: agent_token_creation
+  until: agent_token_creation.rc == 0
+  retries: 5
+  delay: 10
+
+- name: Start Consul service
+  service:
+    name: consul
+    state: restarted
+    enabled: yes

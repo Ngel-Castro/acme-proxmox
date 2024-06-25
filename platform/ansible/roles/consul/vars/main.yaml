@@ -1,0 +1,11 @@
+---
+consul_user: "consul"
+consul_group: "consul"
+consul_data_dir: "/opt/consul"
+consul_config_dir: "/etc/consul.d"
+consul_service_file: "/etc/systemd/system/consul.service"
+bind_address: "0.0.0.0"
+bootstrap_expect: 1
+statefiles_policy_name: "statefiles-policy"
+statefiles_policy_description: "Policy for accessing opentofu statefiles path"
+statefiles_path: "statefiles/"

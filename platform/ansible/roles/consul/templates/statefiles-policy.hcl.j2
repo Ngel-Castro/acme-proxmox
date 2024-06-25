@@ -1,0 +1,19 @@
+# These control access to the key/value store and sessions.
+key_prefix "" {
+  policy = "read"
+}
+key_prefix "{{ statefiles_path }}" {
+  policy = "write"
+}
+key_prefix "manifests/" {
+  policy = "write"
+}
+key_prefix "configs/" {
+  policy = "write"
+}
+key_prefix "instances/" {
+  policy = "write"
+}
+session "consul-server" {
+  policy = "write"
+}

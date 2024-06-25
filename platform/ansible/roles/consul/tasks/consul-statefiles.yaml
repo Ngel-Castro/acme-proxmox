@@ -1,0 +1,28 @@
+---
+- name: Create stastefile policy
+  ansible.builtin.template:
+    src: "templates/statefiles-policy.hcl.j2"
+    dest: "/tmp/statefiles-policy.hcl"
+    owner: "{{ consul_user }}"
+    group: "{{ consul_group }}"
+    mode: '0644'
+
+- name: Load stastefile policy into Consul
+  command: /usr/bin/consul acl policy create -name {{ statefiles_policy_name }} -description "{{ statefiles_policy_description }}"  -rules @/tmp/statefiles-policy.hcl -token={{ acl_master_token }}
+  register: statefiles_policy
+  until: statefiles_policy.rc == 0
+  retries: 5
+  delay: 10
+
+- name: Generate sa token
+  command: /usr/bin/consul acl token create -description "Sa token" -policy-name {{ statefiles_policy_name }} -token={{ acl_master_token }}
+  register: service_account_token
+  until: service_account_token.rc == 0
+  retries: 5
+  delay: 10
+  when: not bootstrapped_file.stat.exists
+
+- name: Extract secretid from command output
+  set_fact:
+    secretid: "{{ service_account_token.stdout_lines[0].split()[1] }}"
+  when: service_account_token.rc == 0 and service_account_token.stdout_lines | length > 0

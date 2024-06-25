@@ -6,10 +6,10 @@ vms = [
         storage         = "Kingstone-data"
         storage_size    = 32
         full_clone      = true
-        template_name   = "ubuntu-server-beta"
+        template_name   = "ubuntu-server-base"
         network_bridge  = "vmbr0"
-        memory          = 2048
-        cores           = 2
+        memory          = 3072
+        cores           = 4
         tags            = "tofu"
     },
     { 
@@ -18,10 +18,10 @@ vms = [
         storage         = "Kingstone-data"
         storage_size    = 32
         full_clone      = true
-        template_name   = "ubuntu-server-beta"
+        template_name   = "ubuntu-server-base"
         network_bridge  = "vmbr0"
-        memory          = 2048
-        cores           = 2
+        memory          = 4096
+        cores           = 4
         tags            = "tofu"
     }
 ]

@@ -1,0 +1,53 @@
+---
+- name: Create Consul user and group
+  ansible.builtin.user:
+    name: "{{ consul_user }}"
+    state: present
+    system: yes
+    home: "{{ consul_data_dir }}"
+    shell: /bin/false
+
+- name: Create Consul data and config directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ consul_user }}"
+    group: "{{ consul_group }}"
+    mode: '0755'
+  with_items:
+    - "{{ consul_data_dir }}"
+    - "{{ consul_config_dir }}"
+
+- name: Generate Consul encryption key
+  command: /usr/bin/consul keygen
+  register: consul_keygen_result
+
+- name: Set encryption key fact
+  set_fact:
+    consul_encryption_key: "{{ consul_keygen_result.stdout }}"
+
+- name: Create consul service
+  ansible.builtin.template:
+    src: templates/secured-config.json.j2
+    dest: "{{ consul_config_dir }}/config.json"
+    owner: "{{ consul_user }}"
+    group: "{{ consul_group }}"
+    mode: '0644'
+
+- name: Create consul service
+  ansible.builtin.template:
+    src: templates/consul.service.j2
+    dest: "{{ consul_service_file }}"
+    owner: "{{ consul_user }}"
+    group: "{{ consul_group }}"
+    mode: '0644'
+
+- name: Reload systemd to pick up new service
+  ansible.builtin.systemd:
+    daemon_reload: yes
+
+- name: Start and enable Consul service
+  ansible.builtin.systemd:
+    name: consul
+    state: started
+    enabled: yes
