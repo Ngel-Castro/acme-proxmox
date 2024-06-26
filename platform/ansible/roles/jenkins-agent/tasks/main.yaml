@@ -57,6 +57,15 @@
     mode: 0644
   when: not bootstrapped_file.stat.exists
 
+- name: Copy Groovy script to create web base image pipeline job
+  ansible.builtin.template:
+    src: templates/create-base-pipelines.groovy.j2
+    dest: /var/lib/jenkins/init.groovy.d/create-web-base-pipelines.groovy
+    owner: jenkins
+    group: jenkins
+    mode: 0644
+  when: not bootstrapped_file.stat.exists
+
 - name: Copy Groovy script to create php pipeline job
   ansible.builtin.template:
     src: templates/create-php-pipeline-job.groovy.j2

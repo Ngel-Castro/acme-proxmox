@@ -10,7 +10,7 @@ import com.cloudbees.plugins.credentials.SystemCredentialsProvider
 
 def jenkins = Jenkins.getInstance()
 
-def jobName = "ubuntu-base-pipeline"
+def jobName = "ubuntu-web-base-pipeline"
 def repoUrl = "https://github.com/Ngel-Castro/ubuntu-base.git"
 
 def job = jenkins.getItem(jobName)
@@ -28,7 +28,7 @@ def scm = new GitSCM(
     []
 )
 
-job.setDefinition(new CpsScmFlowDefinition(scm, 'ubuntubase.jenkinsfile'))
+job.setDefinition(new CpsScmFlowDefinition(scm, 'ubuntuwebserver.jenkinsfile'))
 
 job.save()
 
