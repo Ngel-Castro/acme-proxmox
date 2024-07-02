@@ -7,7 +7,7 @@ export PLATFORM_ANSIBLE=ansible/
 export PLATFORM_VARS=env/${ENV}/tofu.tfvars
 export SERVER_SSH_KEY=~/.ssh/cluster_alma
 export ADMIN_SSH_KEY=~/.ssh/cluster_alma
-export SECS_WAIT=20
+export SECS_WAIT=30
 
 echo "Bootstrapping platform"
 
