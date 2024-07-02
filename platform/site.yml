@@ -18,6 +18,8 @@
         name: 
           - docker.io
           - docker-compose
+          - gpg
+          - git
         state: present
       when: not bootstrapped_file.stat.exists
 

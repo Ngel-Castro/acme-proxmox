@@ -7,6 +7,7 @@ export PLATFORM_ANSIBLE=ansible/
 export PLATFORM_VARS=env/${ENV}/tofu.tfvars
 export SERVER_SSH_KEY=~/.ssh/cluster_alma
 export ADMIN_SSH_KEY=~/.ssh/cluster_alma
+export SECS_WAIT=20
 
 echo "Bootstrapping platform"
 
@@ -37,6 +38,9 @@ cp inventory_${ENV}.yaml $initialLocation/platform/${PLATFORM_ANSIBLE}/inventory
 
 cd $initialLocation
 cd platform
+echo "Waiting ${SECS_WAIT} secs until LXC containers start"
+
+sleep ${SECS_WAIT}
 
 echo "Running ansible"
 export INVENTORY_FILE=${PLATFORM_ANSIBLE}/inventory/ci/inventory_${ENV}.yaml

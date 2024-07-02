@@ -1,4 +1,4 @@
-output "vm-inventory" {
-    value = local.vms_inventory
-    description = "Virtual machine(s) inventory"
+output "lxc-inventory" {
+    value = local.containers_inventory
+    description = "LXC(s) inventory"
 }

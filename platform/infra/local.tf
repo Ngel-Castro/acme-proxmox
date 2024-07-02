@@ -7,10 +7,10 @@ locals {
   }
 
   containers_inventory = [
-    for i, vm in var.vms : {
-      name = vm.name
+    for i, lxc in var.containers : {
+      name = lxc.name
       id   = local.module_outputs[tostring(i)]["id"]
-      ip   = local.module_outputs[tostring(i)]["ip"]
+      ip   = replace(local.module_outputs[tostring(i)]["ip"], "/\\/\\d+$/", "")
     }
   ]
   lxc_inventory_json = jsonencode(local.containers_inventory)
