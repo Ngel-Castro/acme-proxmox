@@ -22,6 +22,10 @@
   delay: 10
   when: not bootstrapped_file.stat.exists
 
+- name: consul command
+  ansible.builtin.debug:
+    msg: "Consul version installed: {{ service_account_token.stdout }}"
+
 - name: Extract secretid from command output
   set_fact:
     secretid: "{{ service_account_token.stdout_lines[1].split()[1] }}"
