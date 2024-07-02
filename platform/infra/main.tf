@@ -10,6 +10,7 @@ module "lxc_containers" {
     default_password        = var.default_password
     public_key_encryption   = var.public_key_encryption
     public_key              = var.public_key
+    dns                     = var.dns
 }
 
 data "template_file" "inventory" {
