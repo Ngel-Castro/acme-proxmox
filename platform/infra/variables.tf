@@ -51,3 +51,21 @@ variable "environment" {
   type        = string
   default     = "dev"
 }
+
+variable "default_password" {
+  description = "Default LXC container password"
+  type        = string
+  default     = "changeme"
+}
+
+variable "public_key_encryption" {
+  description = "public key encryption"
+  type        = string
+  default     = "ssh-ed25519"
+}
+ 
+variable "public_key" {
+  description = "Public Key string"
+  type        = string
+  default     = "AAAAC3NzaC1lZDI1NTE5AAAAIKOPgZn0hyLV+UGoAZkIUlUYeyIqbSOPYSU+wpqoIZ7h"
+}

@@ -1,19 +1,22 @@
-module "vms_qemu" {
-  source = "github.com/Ngel-Castro/vm_qemu_multiple?ref=stable"
+module "lxc_containers" {
+  source = "github.com/Ngel-Castro/lxc_module?ref=stable"
 
   # Pass in required variables
     proxmox_host            = var.proxmox_host
     proxmox_token_id        = var.proxmox_token_id
     proxmox_token_secret    = var.proxmox_token_secret
-    vms                     = var.vms
+    containers              = var.containers
     environment             = var.environment
+    default_password        = var.default_password
+    public_key_encryption   = var.public_key_encryption
+    public_key              = var.public_key
 }
 
 data "template_file" "inventory" {
   template = file("${path.module}/inventory.tpl")
 
   vars = {
-    vms_inventory = local.vms_inventory_json
+    vms_inventory = local.lxc_inventory_json
   }
 }
 
