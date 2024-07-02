@@ -74,3 +74,8 @@ variable "public_key" {
   type        = string
   default     = "AAAAC3NzaC1lZDI1NTE5AAAAIKOPgZn0hyLV+UGoAZkIUlUYeyIqbSOPYSU+wpqoIZ7h"
 }
+variable "dns" {
+  description = "DNS server"
+  type        = string
+  default     = "8.8.8.8"
+}
