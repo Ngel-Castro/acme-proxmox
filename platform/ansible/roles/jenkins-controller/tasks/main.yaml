@@ -48,6 +48,17 @@
     state: started
   when: not bootstrapped_file.stat.exists
 
+- name: Copy Jenkins systemd service template
+  template:
+    src: templates/systemd-init.j2
+    dest: /etc/systemd/system/jenkins.service
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Reload systemd daemon to apply new service file
+  command: systemctl daemon-reload
+
 - name: Copy admin key file from the local machine to jenkins controller
   ansible.builtin.copy:
     src: "{{ admin_key_location }}"
