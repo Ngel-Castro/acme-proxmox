@@ -34,11 +34,11 @@ tofu plan -var-file=${PLATFORM_VARS} -var="proxmox_token_id=${PROXMOX_TOKEN_ID}"
 tofu apply --auto-approve -var-file=${PLATFORM_VARS} -var="proxmox_token_id=${PROXMOX_TOKEN_ID}" -var="proxmox_token_secret=${PROXMOX_TOKEN_SECRET}"
 echo "Moving inventory YAML to inventory location in ansible"
 cp inventory_${ENV}.yaml $initialLocation/platform/${PLATFORM_ANSIBLE}/inventory/ci/
-HOSTS="$(tofu output -json lxc-inventory | jq -c -r '.[].ip' | paste -sd ' ' -)"
+HOSTS=$(tofu output -json lxc-inventory | jq -c -r '.[].ip' | paste -sd ' ' -)
 
 cd $initialLocation
 cd platform
-bash scripts/sshprobe.sh $HOSTS $SERVER_SSH_KEY
+bash scripts/sshprobe.sh "$HOSTS" $SERVER_SSH_KEY
 
 echo "Running ansible"
 export INVENTORY_FILE=${PLATFORM_ANSIBLE}/inventory/ci/inventory_${ENV}.yaml
