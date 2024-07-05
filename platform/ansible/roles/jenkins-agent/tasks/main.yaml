@@ -34,9 +34,11 @@
     update_cache: yes
   when: not bootstrapped_file.stat.exists
 
-- name: Install Packer
+- name: Install Packer and Ansible
   apt:
-    name: packer
+    name: 
+    - packer
+    - ansible
     state: latest
   when: not bootstrapped_file.stat.exists
 
@@ -44,9 +46,17 @@
   command: packer version
   register: packer_version_output
 
+- name: Verify Ansible installation
+  command: ansible --version
+  register: ansible_version_output
+
 - name: Display Packer version
   debug:
     msg: "Packer version installed: {{ packer_version_output.stdout }}"
+
+- name: Display Ansible version
+  debug:
+    msg: "{{ ansible_version_output.stdout }}"
 
 - name: Copy Groovy script to create base image pipeline job
   ansible.builtin.template:
