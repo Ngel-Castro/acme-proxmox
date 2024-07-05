@@ -1,33 +1,103 @@
 import jenkins.model.*
-import org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition
+import hudson.model.*
+import com.cloudbees.hudson.plugins.folder.*
 import org.jenkinsci.plugins.workflow.job.WorkflowJob
-import hudson.plugins.git.*
-import hudson.plugins.git.extensions.impl.*
-import com.cloudbees.plugins.credentials.CredentialsScope
-import com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl
-import com.cloudbees.plugins.credentials.domains.Domain
-import com.cloudbees.plugins.credentials.SystemCredentialsProvider
+import org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition
+import hudson.plugins.git.GitSCM
+import hudson.plugins.git.UserRemoteConfig
+import hudson.plugins.git.BranchSpec
 
-def jenkins = Jenkins.getInstance()
+// Jenkins instance
+def jenkinsInstance = Jenkins.getInstance()
 
-def jobName = "codeigniter demo"
-def repoUrl = "https://github.com/{{github_username}}/codeigniter_demo.git"
-
-def job = jenkins.getItem(jobName)
-if (job == null) {
-    job = jenkins.createProject(WorkflowJob, jobName)
+// Folder name
+def folderName = 'php-demo'
+def folder = jenkinsInstance.getItem(folderName)
+if (folder == null) {
+    folder = jenkinsInstance.createProject(Folder.class, folderName)
+    folder.displayName = folderName
+    jenkinsInstance.save()
+    println("Folder '${folderName}' created.")
+} else {
+    println("Folder '${folderName}' already exists.")
 }
 
-def scm = new GitSCM(
-    [new UserRemoteConfig(repoUrl, null, null, 'github-credentials')],
-    [new BranchSpec("*/main")],
-    false,
-    [],
-    null,
-    null,
-    []
-)
+// Pipeline job details
+def repoUrl = "https://github.com/{{github_username}}/codeigniter_demo.git"
 
-job.setDefinition(new CpsScmFlowDefinition(scm, 'Jenkinsfile'))
+def deployer_jobName = "codeigniter-deployer"
+def lxc_provisioner_jobName = "lxc-provisioner"
+def lxc_deprovisioner_jobName = "lxc-deprovisioner"
 
-job.save()
+def deployer_jenkinsfile = "Jenkinsfile"
+def lxc_provisioner_jenkinsfile = "provisionwebserver"
+def lxc_deprovisioner_jenkinsfile = "deletewebserver"
+
+// Check if the job already exists within the folder
+def deployer_job = folder.getItem(deployer_jobName)
+if (deployer_job == null) {
+    deployer_job = folder.createProject(WorkflowJob, deployer_jobName)
+    println("Pipeline job '${deployer_jobName}' created in the folder '${folderName}'.")
+
+    def scm = new GitSCM(
+        [new UserRemoteConfig(repoUrl, null, null, 'github-credentials')],
+        [new BranchSpec("*/main")],
+        false,
+        [],
+        null,
+        null,
+        []
+    )
+
+    deployer_job.setDefinition(new CpsScmFlowDefinition(scm, deployer_jenkinsfile))
+    deployer_job.save()
+    println("Pipeline job '${deployer_jobName}' configured with repository '${repoUrl}'.")
+} else {
+    println("Pipeline job '${deployer_jobName}' already exists in the folder '${folderName}'.")
+}
+
+// Check if the job already exists within the folder
+def lxc_provisioner_job = folder.getItem(lxc_provisioner_jobName)
+if (lxc_provisioner_job == null) {
+    lxc_provisioner_job = folder.createProject(WorkflowJob, lxc_provisioner_jobName)
+    println("Pipeline job '${lxc_provisioner_jobName}' created in the folder '${folderName}'.")
+
+    def scm = new GitSCM(
+        [new UserRemoteConfig(repoUrl, null, null, 'github-credentials')],
+        [new BranchSpec("*/main")],
+        false,
+        [],
+        null,
+        null,
+        []
+    )
+
+    lxc_provisioner_job.setDefinition(new CpsScmFlowDefinition(scm, lxc_provisioner_jenkinsfile))
+    lxc_provisioner_job.save()
+    println("Pipeline job '${lxc_provisioner_jobName}' configured with repository '${repoUrl}'.")
+} else {
+    println("Pipeline job '${lxc_provisioner_jobName}' already exists in the folder '${folderName}'.")
+}
+
+// Check if the job already exists within the folder
+def lxc_deprovisioner_job = folder.getItem(lxc_deprovisioner_jobName)
+if (lxc_deprovisioner_job == null) {
+    lxc_deprovisioner_job = folder.createProject(WorkflowJob, lxc_deprovisioner_jobName)
+    println("Pipeline job '${lxc_deprovisioner_jobName}' created in the folder '${folderName}'.")
+
+    def scm = new GitSCM(
+        [new UserRemoteConfig(repoUrl, null, null, 'github-credentials')],
+        [new BranchSpec("*/main")],
+        false,
+        [],
+        null,
+        null,
+        []
+    )
+
+    lxc_deprovisioner_job.setDefinition(new CpsScmFlowDefinition(scm, lxc_deprovisioner_jenkinsfile))
+    lxc_deprovisioner_job.save()
+    println("Pipeline job '${lxc_deprovisioner_jobName}' configured with repository '${repoUrl}'.")
+} else {
+    println("Pipeline job '${lxc_deprovisioner_jobName}' already exists in the folder '${folderName}'.")
+}
