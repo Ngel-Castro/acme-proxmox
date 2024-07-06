@@ -1,0 +1,14 @@
+FROM ubuntu:devel
+ENV DEBIAN_FRONTEND="noninteractive" TZ="America/New_York"
+
+RUN apt update && apt install -y git curl wget vim make jq unzip python3.12 tzdata ansible
+
+RUN wget https://releases.hashicorp.com/packer/1.9.4/packer_1.9.4_linux_amd64.zip && \
+    mv packer_1.9.4_linux_amd64.zip /tmp/ && \
+    cd tmp/ && \
+    unzip /tmp/packer_1.9.4_linux_amd64.zip && \
+    mv packer /usr/local/bin/
+
+RUN git clone --depth=1 https://github.com/tofuutils/tofuenv.git ~/.tofuenv && echo 'export PATH="$HOME/.tofuenv/bin:$PATH"' >> ~/.bashrc
+
+RUN . ~/.bashrc && tofuenv install v1.7.0-rc1 && tofuenv use v1.7.0-rc1
