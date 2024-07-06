@@ -10,7 +10,7 @@ export JENKINS_VARS=env/${ENV}/tofu.tfvars
 echo "Cleaning up Infra"
 
 echo "sourcing secrets..."
-source $SECRETS_FILE
+. $SECRETS_FILE
 
 echo "Initializing opentofu"
 cd $PLATFORM_INFRA

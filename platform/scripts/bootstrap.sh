@@ -11,7 +11,7 @@ export ADMIN_SSH_KEY=~/.ssh/cluster_alma
 echo "Bootstrapping platform"
 
 echo "sourcing secrets..."
-source $SECRETS_FILE
+. $SECRETS_FILE
 
 echo "Initializing opentofu"
 initialLocation=$(pwd)
